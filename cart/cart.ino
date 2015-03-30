@@ -15,10 +15,13 @@ String matchingTag = "02007F1222";
 String matchingTag2 = "120092FD0B";
 const int ledPin = 12;
 //const int ledPin2 = 12;
-const int wait = 500; // Amount of time LED stays on, in milliseconds
+const int wait = 250; // Amount of time LED stays on, in milliseconds
 
-String lastTag = "";
+//String lastTag = "";
 String tag = tagID;
+
+bool chipsScanned = false;
+bool colaScanned = false;
 
 void setup() {
   // begin serial communication with the computer
@@ -34,23 +37,23 @@ void setup() {
 
 void loop() {
   // read in and parse serial data:
-  if (rfidPort.available() > 0 && readTag() && String(tagID) != lastTag) { 
+  if (rfidPort.available() > 0 && readTag()) { 
     tag = String(tagID);
-    if (matchingTag == tag)
+    if (matchingTag == tag && !colaScanned)
     { 
       // Serial.println("-- Added COLA to shopping cart");
       Serial.println("COLA");
       digitalWrite(ledPin, HIGH); // Turn on the yellow LED
       delay(wait);                // Wait time before turning light off
       digitalWrite(ledPin, LOW);  // Turn the LED off by making the voltage LOW
-      lastTag = tagID;
-    } else if (matchingTag2 == tag) {
+      colaScanned = true;
+    } else if (matchingTag2 == tag && !chipsScanned) {
       // Serial.println("-- Added CHIPS to shopping cart");
       Serial.println("CHIPS");
       digitalWrite(ledPin, HIGH); // Turn on the yellow LED
       delay(wait);                 // Wait time before turning light off
       digitalWrite(ledPin, LOW);  // Turn the LED off by making the voltage LOW
-      lastTag = tagID;
+      chipsScanned = true;
     } else {
       digitalWrite(ledPin, LOW);
     }
