@@ -13,10 +13,12 @@ SoftwareSerial rfidPort(rxpin, txpin); // create a Software Serial port
 
 String matchingTag = "02007F1222";
 String matchingTag2 = "120092FD0B";
-const int ledPin = 13;
-const int ledPin2 = 12;
+const int ledPin = 12;
+//const int ledPin2 = 12;
 const int wait = 500; // Amount of time LED stays on, in milliseconds
 
+String lastTag = "";
+String tag = tagID;
 
 void setup() {
   // begin serial communication with the computer
@@ -26,26 +28,29 @@ void setup() {
   rfidPort.begin(2400);
   
   pinMode(ledPin, OUTPUT);   // Green LED
-  pinMode(ledPin2, OUTPUT);  // Yellow LED
+  //pinMode(ledPin2, OUTPUT);  // Yellow LED
 
 }
 
 void loop() {
   // read in and parse serial data:
-  if (rfidPort.available() > 0 && readTag()) { 
-    if (matchingTag.equals(tagID))
+  if (rfidPort.available() > 0 && readTag() && String(tagID) != lastTag) { 
+    tag = String(tagID);
+    if (matchingTag == tag)
     { 
       // Serial.println("-- Added COLA to shopping cart");
       Serial.println("COLA");
-      digitalWrite(ledPin, HIGH); // Turn on the green LED
+      digitalWrite(ledPin, HIGH); // Turn on the yellow LED
       delay(wait);                // Wait time before turning light off
       digitalWrite(ledPin, LOW);  // Turn the LED off by making the voltage LOW
-    } else if (matchingTag2.equals(tagID)) {
+      lastTag = tagID;
+    } else if (matchingTag2 == tag) {
       // Serial.println("-- Added CHIPS to shopping cart");
       Serial.println("CHIPS");
-      digitalWrite(ledPin2, HIGH); // Turn on the green LED
+      digitalWrite(ledPin, HIGH); // Turn on the yellow LED
       delay(wait);                 // Wait time before turning light off
-      digitalWrite(ledPin2, LOW);  // Turn the LED off by making the voltage LOW 
+      digitalWrite(ledPin, LOW);  // Turn the LED off by making the voltage LOW
+      lastTag = tagID;
     } else {
       digitalWrite(ledPin, LOW);
     }
