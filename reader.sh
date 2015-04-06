@@ -28,7 +28,7 @@ while true; do
 	while read LINE; do
 		if [[ "$LINE" == URL--* ]]; then
 			LINE="${LINE#URL--}"
-			#echo "$LINE"
+			echo "$LINE"
 			open "$LINE"
 		fi
 	done
